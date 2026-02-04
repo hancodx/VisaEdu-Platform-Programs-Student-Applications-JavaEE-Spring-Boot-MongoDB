@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>University List</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 font-sans">
+
+<div class="max-w-6xl mx-auto p-10">
+
+    <h1 class="text-4xl font-bold mb-6 text-center text-blue-700">
+        🌍 Universities Management
+    </h1>
+
+    <div class="text-center mb-6">
+        <button onclick="loadUniversities()"
+                class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">
+            Load Universities
+        </button>
+    </div>
+
+    <div id="universityList"
+         class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    </div>
+
+</div>
+
+
+<script>
+    async function loadUniversities() {
+
+        const container = document.getElementById("universityList");
+        container.innerHTML = "<p class='text-gray-500'>Loading...</p>";
+
+        try {
+            // Call API
+            const response = await fetch("http://localhost:8083/api/universities");
+            const universities = await response.json();
+
+            container.innerHTML = "";
+
+            universities.forEach(u => {
+                container.innerHTML += `
+                    <div class="bg-white shadow-lg rounded-xl p-5 hover:scale-105 transition">
+
+                        <h2 class="text-xl font-bold text-blue-700">
+                            ${u.name}
+                        </h2>
+
+                        <p class="text-gray-600">
+                            📍 ${u.city}, ${u.country}
+                        </p>
+
+                        <p class="mt-2 text-sm text-gray-500">
+                            ⭐ Ranking: #${u.ranking}
+                        </p>
+
+                        <p class="mt-2 text-sm">
+                            ${u.description || "No description available"}
+                        </p>
+
+                        <a href="${u.website}"
+                           target="_blank"
+                           class="block mt-4 text-blue-600 hover:underline">
+                            🌐 Visit Website
+                        </a>
+
+                    </div>
+                `;
+            });
+
+        } catch (error) {
+            container.innerHTML =
+                "<p class='text-red-600'>❌ Error loading universities</p>";
+        }
+    }
+
+    // Auto load when page opens
+    loadUniversities();
+</script>
+
+</body>
+</html>
